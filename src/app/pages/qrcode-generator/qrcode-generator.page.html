@@ -1,0 +1,99 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Generate
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-row>
+
+    <ion-col class="ion-text-center">
+      <ngx-qrcode [elementType]="qrElementType" [value]="qrValue" [width]="300" errorCorrectionLevel="L"> </ngx-qrcode>
+    </ion-col>
+
+  </ion-row>
+
+  <ion-row>
+
+    <ion-col>
+
+      <div class="ion-padding-start ion-padding-end">
+        <h5>QR Value</h5>
+        <div>
+          <span>{{  qrValue }}</span>
+        </div>
+      </div>
+    </ion-col>
+
+  </ion-row>
+
+  <ion-row>
+
+    <ion-col>
+
+      <div class="ion-padding-start ion-padding-end">
+        <h5>Payload</h5>
+        <div>
+          <span>{{ '{' }}</span>
+        </div>
+  
+        <ng-container *ngFor="let payloadItem of payloadItems; let i = index">
+  
+          <div class="ion-padding-start" *ngIf="isString(payloadItem.value)">
+            <span>{{ '"' + payloadItem.key + '" : "' }}{{ payloadItem.value }}{{ '"' }}</span>
+            <span *ngIf="i !== payloadItems.length - 1">,</span>
+          </div>
+  
+          <div class="ion-padding-start" *ngIf="isNumber(payloadItem.value)">
+            <span>{{ '"' + payloadItem.key + '" : ' }}{{ payloadItem.value }}</span>
+            <span *ngIf="i !== payloadItems.length - 1">,</span>
+          </div>
+  
+        </ng-container>
+  
+        <div>
+          <span>{{ '}' }}</span>
+        </div>
+      </div>
+ 
+    </ion-col>
+
+  </ion-row>
+
+  <ion-row class="ion-text-center">
+
+    <ion-col>
+      <ion-button (click)="onAddStringItem()">Add String</ion-button>
+    </ion-col>
+
+  </ion-row>
+
+  <ion-row class="ion-text-center">
+
+    <ion-col >
+      <ion-button (click)="onAddNumberItem()">Add Number</ion-button>
+    </ion-col>
+
+  </ion-row>
+
+  <ion-row class="ion-text-center">
+
+    <ion-col >
+      <ion-button (click)="onRemoveLastItem()">Remove Last</ion-button>
+    </ion-col>
+
+  </ion-row>
+
+
+  <ion-row>
+
+    <ion-col class="ion-text-center">
+      <ion-button (click)="onUpdateQr()">Update Qr</ion-button>
+    </ion-col>
+
+  </ion-row>
+  
+</ion-content>
