@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AlertController, ToastController } from '@ionic/angular';
 import * as CryptoJs from 'crypto-js';
+import * as JsBase64 from 'js-base64';
 import { environment as env } from 'src/environments/environment';
 
 const header = {
@@ -159,8 +160,8 @@ export class QrcodeGeneratorPage {
     this.payloadItems.forEach(payloadItem => {
       payload[payloadItem.key] = payloadItem.value;
     });
-    const base64UrlEncodedHeader = this.base64UrlEncode(btoa(JSON.stringify(header)));
-    const base64UrlEncodedPayload = this.base64UrlEncode(btoa(JSON.stringify(payload)));
+    const base64UrlEncodedHeader = this.base64UrlEncode(JsBase64.encode(JSON.stringify(header)));
+    const base64UrlEncodedPayload = this.base64UrlEncode(JsBase64.encode(JSON.stringify(payload)));
     const msg = base64UrlEncodedHeader + '.' + base64UrlEncodedPayload;
     const signature = CryptoJs.HmacSHA256(msg, env.secretSignKey).toString();
     this.qrValue = CryptoJs.AES.encrypt(msg + '.' + signature, env.secretEncKey).toString();
