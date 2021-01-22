@@ -58,7 +58,7 @@ export class QrcodeScannerPage {
                   //   }
                   // }
                   try {
-                    const qrJson = JSON.parse(qrValue);
+                    const qrJson = JSON.parse(JsBase64.decode(qrValue));
                     if (qrJson['secret'] && qrJson['secret'] == env.secretSignKey) {
                       delete qrJson['secret'];
                       finalText = "Success Decoded Payload:<br>" + JSON.stringify(qrJson);

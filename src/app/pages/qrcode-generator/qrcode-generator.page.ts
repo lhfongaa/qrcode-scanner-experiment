@@ -170,7 +170,7 @@ export class QrcodeGeneratorPage {
     // const msg = base64UrlEncodedHeader + '.' + base64UrlEncodedPayload;
     // const signature = CryptoJs.HmacSHA256(msg, env.secretSignKey).toString();
     // this.qrValue = CryptoJs.AES.encrypt(msg + '.' + signature, env.secretEncKey).toString();
-    this.qrValue = CryptoJs.AES.encrypt(JSON.stringify(payload), env.secretEncKey).toString();
+    this.qrValue = CryptoJs.AES.encrypt(JsBase64.encode(JSON.stringify(payload)), env.secretEncKey).toString();
   }
 
   isKeyExist(key: string): boolean {
