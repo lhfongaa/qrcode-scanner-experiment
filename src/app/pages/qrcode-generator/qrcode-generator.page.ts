@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Chooser } from '@ionic-native/chooser/ngx';
+import { File } from '@ionic-native/file/ngx';
 import { AlertController, ToastController } from '@ionic/angular';
 import * as CryptoJs from 'crypto-js';
 import * as JsBase64 from 'js-base64';
@@ -11,7 +13,7 @@ const header = {
 
 class PayloadItem {
   key: string;
-  value: string | number ;
+  value: any ;
 }
 
 @Component({
@@ -28,7 +30,9 @@ export class QrcodeGeneratorPage {
 
   constructor(
     public alertController: AlertController,
-    public toastController: ToastController
+    public toastController: ToastController,
+    private chooser: Chooser,
+    private file: File
   ) {}
 
   async onAddStringItem(): Promise<void> {
@@ -160,11 +164,13 @@ export class QrcodeGeneratorPage {
     this.payloadItems.forEach(payloadItem => {
       payload[payloadItem.key] = payloadItem.value;
     });
-    const base64UrlEncodedHeader = this.base64UrlEncode(JsBase64.encode(JSON.stringify(header)));
-    const base64UrlEncodedPayload = this.base64UrlEncode(JsBase64.encode(JSON.stringify(payload)));
-    const msg = base64UrlEncodedHeader + '.' + base64UrlEncodedPayload;
-    const signature = CryptoJs.HmacSHA256(msg, env.secretSignKey).toString();
-    this.qrValue = CryptoJs.AES.encrypt(msg + '.' + signature, env.secretEncKey).toString();
+    payload['secret'] = env.secretSignKey;
+    // const base64UrlEncodedHeader = this.base64UrlEncode(JsBase64.encode(JSON.stringify(header)));
+    // const base64UrlEncodedPayload = this.base64UrlEncode(JsBase64.encode(JSON.stringify(payload)));
+    // const msg = base64UrlEncodedHeader + '.' + base64UrlEncodedPayload;
+    // const signature = CryptoJs.HmacSHA256(msg, env.secretSignKey).toString();
+    // this.qrValue = CryptoJs.AES.encrypt(msg + '.' + signature, env.secretEncKey).toString();
+    this.qrValue = CryptoJs.AES.encrypt(JSON.stringify(payload), env.secretEncKey).toString();
   }
 
   isKeyExist(key: string): boolean {
@@ -181,6 +187,38 @@ export class QrcodeGeneratorPage {
 
   base64UrlEncode(base64Text: string) {
     return base64Text.replace( "+", "-").replace("/", "_").replace("=", "");
+  }
+
+  async onImportJsonFile(): Promise<void> {
+
+    await this.chooser.getFile("application/json").then(
+      async (file) => {
+        if (file.data) {
+          const result =JSON.parse(String.fromCharCode.apply(null, new Uint8Array(file.data)));
+          this.payloadItems = [];
+          Object.keys(result).forEach( key => {
+            const payloadItem = new PayloadItem();
+            payloadItem.key = key;
+            payloadItem.value = result[key];
+            console.log(JSON.stringify(payloadItem));
+            this.payloadItems.push(payloadItem);
+          });
+        } else {
+          const toast = await this.toastController.create({
+            message: 'Empty Json File',
+            duration: 2000
+          });
+          await toast.present();
+        }
+      },
+      err => {
+        console.error("error in importing json file", err);
+      }
+    );
+  }
+
+  getStringifyValue(value: any): string {
+    return JSON.stringify(value);
   }
 
 }

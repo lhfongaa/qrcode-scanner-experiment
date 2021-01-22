@@ -51,6 +51,11 @@
             <span>{{ '"' + payloadItem.key + '" : ' }}{{ payloadItem.value }}</span>
             <span *ngIf="i !== payloadItems.length - 1">,</span>
           </div>
+
+          <div class="ion-padding-start" *ngIf="!isString(payloadItem.value) && !isNumber(payloadItem.value)">
+            <span>{{ '"' + payloadItem.key + '" : ' }}{{ getStringifyValue(payloadItem.value) }}</span>
+            <span *ngIf="i !== payloadItems.length - 1">,</span>
+          </div>
   
         </ng-container>
   
@@ -59,6 +64,14 @@
         </div>
       </div>
  
+    </ion-col>
+
+  </ion-row>
+
+  <ion-row class="ion-text-center">
+
+    <ion-col>
+      <ion-button (click)="onImportJsonFile()">Import</ion-button>
     </ion-col>
 
   </ion-row>
