@@ -21,7 +21,7 @@
     <ion-col>
 
       <div class="ion-padding-start ion-padding-end">
-        <h5>QR Value</h5>
+        <h5>QR Value ({{qrValue ? qrValue.length : 0}} bytes)</h5>
         <div>
           <span>{{  qrValue }}</span>
         </div>
@@ -68,45 +68,48 @@
 
   </ion-row>
 
-  <ion-row class="ion-text-center">
+  <div class="ion-padding-start ion-padding-end">
+    <ion-row class="ion-text-center">
 
-    <ion-col>
-      <ion-button (click)="onImportJsonFile()">Import</ion-button>
-    </ion-col>
+      <ion-col>
+        <ion-button expand="block" (click)="onImportJsonFile()">Import</ion-button>
+      </ion-col>
 
-  </ion-row>
+    </ion-row>
 
-  <ion-row class="ion-text-center">
+    <ion-row class="ion-text-center">
 
-    <ion-col>
-      <ion-button (click)="onAddStringItem()">Add String</ion-button>
-    </ion-col>
+      <ion-col>
+        <ion-button expand="block" (click)="onAddStringItem()">Add String</ion-button>
+      </ion-col>
 
-  </ion-row>
+      <ion-col >
+        <ion-button expand="block" (click)="onAddNumberItem()">Add Number</ion-button>
+      </ion-col>
 
-  <ion-row class="ion-text-center">
+    </ion-row>
 
-    <ion-col >
-      <ion-button (click)="onAddNumberItem()">Add Number</ion-button>
-    </ion-col>
+    <ion-row class="ion-text-center">
 
-  </ion-row>
+      <ion-col >
+        <ion-button expand="block" (click)="onRemoveLastItem()">Remove Last</ion-button>
+      </ion-col>
 
-  <ion-row class="ion-text-center">
-
-    <ion-col >
-      <ion-button (click)="onRemoveLastItem()">Remove Last</ion-button>
-    </ion-col>
-
-  </ion-row>
+    </ion-row>
 
 
-  <ion-row>
+    <ion-row>
 
-    <ion-col class="ion-text-center">
-      <ion-button (click)="onUpdateQr()">Update Qr</ion-button>
-    </ion-col>
+      <ion-col class="ion-text-center">
+        <ion-button expand="block" (click)="onUpdateQr(true)">QR (Compress)</ion-button>
+      </ion-col>
 
-  </ion-row>
+      <ion-col class="ion-text-center">
+        <ion-button expand="block" (click)="onUpdateQr(false)">QR (Uncompress)</ion-button>
+      </ion-col>
+
+
+    </ion-row>
+  </div>
   
 </ion-content>

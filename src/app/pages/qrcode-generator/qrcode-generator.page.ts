@@ -4,12 +4,8 @@ import { File } from '@ionic-native/file/ngx';
 import { AlertController, ToastController } from '@ionic/angular';
 import * as CryptoJs from 'crypto-js';
 import * as JsBase64 from 'js-base64';
+import * as Lzutf8 from 'lzutf8';
 import { environment as env } from 'src/environments/environment';
-
-const header = {
-  "alg": "HS256",
-  "typ": "JWT"
-};
 
 class PayloadItem {
   key: string;
@@ -159,18 +155,26 @@ export class QrcodeGeneratorPage {
     this.payloadItems.pop();
   }
 
-  onUpdateQr(): void {
+  onUpdateQr(doCompress: boolean = false): void {
     const payload = {};
+    const header = {
+      "alg": "HS256",
+      "typ": "JWT"
+    };
     this.payloadItems.forEach(payloadItem => {
       payload[payloadItem.key] = payloadItem.value;
     });
     payload['secret'] = env.secretSignKey;
-    // const base64UrlEncodedHeader = this.base64UrlEncode(JsBase64.encode(JSON.stringify(header)));
-    // const base64UrlEncodedPayload = this.base64UrlEncode(JsBase64.encode(JSON.stringify(payload)));
-    // const msg = base64UrlEncodedHeader + '.' + base64UrlEncodedPayload;
-    // const signature = CryptoJs.HmacSHA256(msg, env.secretSignKey).toString();
-    // this.qrValue = CryptoJs.AES.encrypt(msg + '.' + signature, env.secretEncKey).toString();
-    this.qrValue = CryptoJs.AES.encrypt(JsBase64.encode(JSON.stringify(payload)), env.secretEncKey).toString();
+    //const base64UrlEncodedHeader = this.base64UrlEncode(JsBase64.encode(JSON.stringify(header)));
+    //const base64UrlEncodedPayload = this.base64UrlEncode(JsBase64.encode(JSON.stringify(payload)));
+    //const msg = base64UrlEncodedHeader + '.' + base64UrlEncodedPayload;
+    //const signature = CryptoJs.HmacSHA256(msg, env.secretSignKey).toString();
+    //this.qrValue = Lzutf8.compress(CryptoJs.AES.encrypt(msg + '.' + signature, env.secretEncKey).toString(), {outputEncoding: "Base64"}) ;
+    if (doCompress) {
+      this.qrValue = CryptoJs.AES.encrypt(Lzutf8.compress(JSON.stringify(payload), {outputEncoding: "Base64"}), env.secretEncKey).toString();
+    } else {
+      this.qrValue = CryptoJs.AES.encrypt(JsBase64.encode(JSON.stringify(payload)), env.secretEncKey).toString();
+    }
   }
 
   isKeyExist(key: string): boolean {

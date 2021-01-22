@@ -1,8 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
+    <ion-title slot="start">
       Scan
     </ion-title>
+    <ion-toggle class="ion-padding-end" slot="end" mode="ios" [(ngModel)]="compressMode"></ion-toggle>
   </ion-toolbar>
 </ion-header>
 
