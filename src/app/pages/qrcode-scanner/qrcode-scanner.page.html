@@ -3,7 +3,10 @@
     <ion-title slot="start">
       Scan
     </ion-title>
-    <ion-toggle class="ion-padding-end" slot="end" mode="ios" [(ngModel)]="compressMode"></ion-toggle>
+    <ion-item lines="none" slot="end">
+      <ion-label>Compress?</ion-label>
+      <ion-toggle mode="ios" [(ngModel)]="compressMode" slot="end"></ion-toggle>
+    </ion-item>
   </ion-toolbar>
 </ion-header>
 
