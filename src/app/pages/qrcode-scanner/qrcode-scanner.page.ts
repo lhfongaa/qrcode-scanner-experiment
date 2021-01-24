@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
-import { AlertController, Platform } from '@ionic/angular';
+import { AlertController, Platform, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import * as CryptoJs from 'crypto-js';
 import * as JsBase64 from 'js-base64';
@@ -16,11 +16,13 @@ export class QrcodeScannerPage {
 
   compressMode: boolean = false;
   scanSub: Subscription;
+  scanToast: HTMLIonToastElement;
 
   constructor(
     private platform: Platform,
     private qrScanner: QRScanner,
-    public alertController: AlertController
+    public alertController: AlertController,
+    public toastController: ToastController
   ) {
     
   }
@@ -32,6 +34,10 @@ export class QrcodeScannerPage {
   ionViewDidLeave(): void {
     this.qrScanner.hide();
     this.scanSub.unsubscribe();
+    if (this.scanToast) {
+      this.scanToast.dismiss();
+      delete this.scanToast;
+    }
   }
 
   qrScan(): void {
@@ -42,6 +48,11 @@ export class QrcodeScannerPage {
             () => {
               this.scanSub = this.qrScanner.scan().subscribe(
                 async (text: string) => {
+                  this.scanToast = await this.toastController.create({
+                    "message": "Something Scanned",
+                    "position": "top",
+                  });
+                  await this.scanToast.present();
                   let finalText: string = '';
                   if (this.scanSub) {
                     this.scanSub.unsubscribe();
@@ -102,7 +113,14 @@ export class QrcodeScannerPage {
       message: msg,
       buttons: ['OK']
     });
-
+    alert.onDidDismiss().then(
+      () => {
+        if (this.scanToast) {
+          this.scanToast.dismiss();
+          delete this.scanToast;
+        }
+      }
+    )
     await alert.present();
   }
 
